@@ -65,10 +65,12 @@ public final class LambdaUtilities {
      *         otherwise.
      */
     public static <T> List<Optional<T>> optFilter(final List<T> list, final Predicate<T> pre) {
-        /*
-         * Suggestion: consider Optional.filter
-         */
-        return emptyList();
+        final List<Optional<T>> l = new ArrayList<>(list.size());
+        list.forEach(t ->  {
+                l.add(pre.test(t) ? Optional.of(t) : Optional.empty());
+            }
+        );
+        return l;
     }
 
     /**
