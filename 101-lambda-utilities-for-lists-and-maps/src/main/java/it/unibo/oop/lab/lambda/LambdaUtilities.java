@@ -95,7 +95,7 @@ public final class LambdaUtilities {
                 op.apply(t),
                 new HashSet<>(Set.of(t)), 
                 (singletonSet, oldSet) -> {
-                    singletonSet.forEach(oldSet::add);
+                    oldSet.addAll(singletonSet);
                     return oldSet;
                 }
             )
