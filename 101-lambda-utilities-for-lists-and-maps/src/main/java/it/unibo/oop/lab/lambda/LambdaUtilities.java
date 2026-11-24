@@ -2,6 +2,7 @@ package it.unibo.oop.lab.lambda;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -13,8 +14,8 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
+import static java.util.Collections.singleton;
 
 /**
  * This class will contain four utility functions on lists and maps, of which the first one is provided as example.
@@ -44,10 +45,11 @@ public final class LambdaUtilities {
      */
     public static <T> List<T> dup(final List<T> list, final UnaryOperator<T> op) {
         final List<T> l = new ArrayList<>(list.size() * 2);
-        list.forEach(t -> {
-            l.add(t);
-            l.add(op.apply(t));
-        });
+            list.forEach(t -> {
+                l.add(t); 
+                l.add(op.apply(t));
+            }
+        );
         return l;
     }
 
@@ -69,7 +71,7 @@ public final class LambdaUtilities {
          * Suggestion: consider Optional.filter
          */ 
         final List<Optional<T>> l = new ArrayList<>(list.size());
-        list.forEach( t -> l.add(Optional.of(t).filter(pre)));
+        list.forEach(t -> l.add(Optional.of(t).filter(pre)));
         return l;
     }
 
@@ -91,7 +93,17 @@ public final class LambdaUtilities {
         /*
          * Suggestion: consider Map.merge
          */
-        return emptyMap();
+        final Map<R, Set<T>> map = new HashMap<>();
+        list.forEach(t -> map.merge(
+                op.apply(t),
+                new HashSet<>(Set.of(t)), 
+                (singletonSet, oldSet) -> {
+                    singletonSet.forEach(oldSet::add);
+                    return oldSet;
+                }
+            )
+        );
+        return map;
     }
 
     /**
